@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Image Geo-Location Plotter</title>
+
+    <!-- Link to CSS stylesheet -->
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Image Geo-Location Plotter</h1>
+
+      <!-- File upload form -->
+      <form id="form">
+        <input type="file" id="fileInput" accept="image/*">
+        <button type="submit">Plot Location</button>
+      </form>
+
+      <!-- Thumbnail container -->
+      <div id="thumbnailContainer">
+        <!-- Thumbnail placeholder -->
+        <div id="thumbnailPlaceholder"></div>
+
+        <!-- Map container -->
+        <div id="mapContainer">
+          <!-- Map placeholder -->
+          <div id="mapPlaceholder"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+
+    <!-- JavaScript code for reading EXIF data and plotting the geo-location on the map -->
+    <script>
+      // Get the form element
+      const form = document.getElementById("form");
+
+      // Get the file input element
+      const fileInput = document.getElementById("fileInput");
+
+      // Get the thumbnail placeholder element
+      const thumbnailPlaceholder = document.getElementById("thumbnailPlaceholder");
+
+      // Get the map placeholder element
+      const mapPlaceholder = document.getElementById("mapPlaceholder");
+
+      // Initialize the Google Map
+      const map = new google.maps.Map(mapPlaceholder, {
+        zoom: 12,
+        center: { lat: 0, lng: 0 }
+      });
+
+      // Handle form submit event
+      form.onsubmit = function(event) {
+        event.preventDefault();
+
+        // Read the image file
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.readAsArrayBuffer(file);
+        reader.onload = function() {
+          // Get the EXIF data
+          const exif = EXIF.readFromBinaryFile(new BinaryFile(reader.result));
+
+          // Get the geo-location from the EXIF data
+          const latitude = exif.GPSLatitude;
+          const longitude = exif.GPSLongitude;
+
+          // Plot the geo-location on the map
+          const marker = new google.maps.Marker({
+            position: { lat: latitude, lng: longitude },
+            map: map
+          });
+
+          // Show the thumbnail of the image
+          const thumbnail = new Image();
+          thumbnail.src = URL.createObjectURL(file);
+          thumbnailPlaceholder.appendChild(thumbnail);
+
+          // Center the map on the geo-location
+          map.setCenter({ lat: latitude, lng: longitude });
+        };
+      };
+    </script>
+  </body>
+</html>
+
+<!-- CSS stylesheet -->
+<style>
+body {
+  font-family: sans-serif;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+#form {
+  margin-bottom: 1em;
+}
+
+#thumbnailContainer {
+  display: flex;
+  justify-content: center;
+}
+
+#thumbnailPlaceholder {
+  width: 300px;
+  height: 200px;
+  overflow: hidden;
+  margin-right: 1em;
+}
+
+#thumbnailPlaceholder img {
+  width: 100%;
+}
+
+#mapContainer {
+  width: 500px;
+  height: 400px;
+}
+
+#mapPlaceholder {
+  width: 100%;
+  height: 100%;
+}
+</style>

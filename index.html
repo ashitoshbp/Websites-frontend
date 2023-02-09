@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Online Event Registration</title>
+  <style>
+    /* CSS styles for the form */
+    form {
+      width: 500px;
+      margin: 0 auto;
+      padding: 30px;
+      border: 1px solid #ccc;
+      background-color: #fafafa;
+    }
+
+    input[type="text"], input[type="email"], input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+    }
+
+    input[type="submit"] {
+      width: 100%;
+      padding: 12px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    h3 {
+      text-align: center;
+    }
+
+    #countdown {
+      text-align: center;
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+  <h3>Online Event Registration</h3>
+  <form id="registration-form">
+    <input type="text" name="fullName" placeholder="Full Name" required>
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <input type="submit" value="Submit">
+  </form>
+  <div id="countdown"></div>
+
+  <script>
+    // JavaScript code to display the time remaining to the start of the event
+    var countDownDate = new Date("Apr 5, 2022 15:37:25").getTime();
+    var x = setInterval(function() {
+      var now = new Date().getTime();
+      var distance = countDownDate - now;
+      var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      document.getElementById("countdown").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+      if (distance < 0) {
+        clearInterval(x);
+        document.getElementById("countdown").innerHTML = "Event has started!";
+      }
+    }, 1000);
+  </script>
+</body>
+</html>
